@@ -1,12 +1,12 @@
-# Báo cáo Day 6: [ĐIỀN tên đề tài ngắn]
+# Báo cáo Day 6: Phát hiện vật cản cho robot/drone
 
 > Thay **mọi** ô có chữ ĐIỀN nằm trong ngoặc vuông bằng nội dung của bạn, xoá luôn cả dấu ngoặc vuông. Lệnh `python tools/check_submission.py` sẽ báo FAIL nếu còn sót bất kỳ chỗ nào.
 
-- **Họ tên:** [ĐIỀN]
-- **MSSV:** [ĐIỀN] (phải trùng với MSSV trong tên repo `<HoVaTen>-<MSSV>-Track4-Day21`)
-- **Lớp:** [ĐIỀN]
-- **Link repo:** [ĐIỀN]
-- **Topic:** [ĐIỀN một chữ cái A/B/C/D/E/F] — [ĐIỀN tên topic]
+- **Họ tên:** Nguyễn Hữu Chương
+- **MSSV:** 2A202602601
+- **Lớp:** L3B
+- **Link repo:** https://github.com/hchuong04/NguyenHuuChuong-2A202602601-Track4-Day21
+- **Topic:** D — Phát hiện vật cản cho robot/drone
 - **Dataset:** [ĐIỀN một hoặc nhiều trong: data/synthetic, data/kitti_mini, data/nuscenes_mini_subset, log riêng]
 - **Các frame đã dùng:** [ĐIỀN danh sách frame id, ví dụ 000011, 000049 hoặc scene-0103_010]
 
