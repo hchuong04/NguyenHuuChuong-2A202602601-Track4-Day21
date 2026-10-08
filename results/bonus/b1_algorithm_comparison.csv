@@ -1,0 +1,3 @@
+Thuat_toan,Nguyen_ly,Diem_mat_dat,Diem_vat_can,So_clusters,Vat_thap_gan (<0.8m),Vat_gan_nhat (m),Latency_plane (ms),Uu_diem,Nhuoc_diem
+RANSAC Plane (th=0.20m),Uoc luong mat phang thich ung,10087,11843,61,2465,2.99,4.35,Thich nghi voi mat duong nghieng/doc,Cham hon do can 100 vong lap RANSAC
+Fixed Height (z < -1.50m),Cat phang cung theo do cao cam bien,6444,15486,102,3964,2.99,3.34,Sieu nhanh (phep so sanh mang numpy),Sup do khi duong doc; nhan nham mat duong thanh vat can

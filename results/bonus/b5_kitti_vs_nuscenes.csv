@@ -1,0 +1,4 @@
+Dataset,Frame_ID,Dieu_kien,So_beam_LiDAR,Tong_diem_tho,Diem_sau_Voxel,Diem_mat_dat,Diem_vat_can,So_clusters,Clusters_xa (>20m),Vat_gan_nhat (m)
+KITTI HDL-64E,000011,"Ban ngày, trời quang",64,108004,21930,10087,11843,61,29,2.99
+nuScenes 32-beam,scene-0103_010,"Ban ngày, đô thị Singapore",32,34720,7014,3728,3286,25,0,0.36
+nuScenes 32-beam,scene-1094_010,"Ban đêm sau mưa, đường ướt",32,34688,5712,3915,1797,23,0,0.37
