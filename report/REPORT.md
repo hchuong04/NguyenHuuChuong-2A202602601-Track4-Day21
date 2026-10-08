@@ -47,7 +47,16 @@ Use-case cụ thể (ADAS / robot / drone), trade-off và bước tiếp theo.
 Các lệnh tái tạo lại toàn bộ kết quả từ repo sạch.
 
 ```bash
-[ĐIỀN]
+# 1. Cài đặt môi trường
+pip install -r requirements.txt open3d
+
+# 2. Chạy kiểm tra projection cơ sở (CP2)
+python -m starter.projection --data-root data/synthetic --frame 000000
+python -m starter.projection --data-root data/kitti_mini --frame 000011
+
+# 3. Chạy pipeline phát hiện vật cản (Topic D - CP2)
+python src/obstacle_detector.py --data-root data/kitti_mini --frame 000011 --voxel-size 0.1 --distance-threshold 0.2 --eps 0.5
+python src/obstacle_detector.py --data-root data/synthetic --frame 000000 --voxel-size 0.1 --distance-threshold 0.2 --eps 0.5
 ```
 
 ## 6. Khai báo sử dụng AI
