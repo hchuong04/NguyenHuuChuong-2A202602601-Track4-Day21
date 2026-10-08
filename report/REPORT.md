@@ -7,8 +7,8 @@
 - **Lớp:** L3B
 - **Link repo:** https://github.com/hchuong04/NguyenHuuChuong-2A202602601-Track4-Day21
 - **Topic:** D — Phát hiện vật cản cho robot/drone
-- **Dataset:** [ĐIỀN một hoặc nhiều trong: data/synthetic, data/kitti_mini, data/nuscenes_mini_subset, log riêng]
-- **Các frame đã dùng:** [ĐIỀN danh sách frame id, ví dụ 000011, 000049 hoặc scene-0103_010]
+- **Dataset:** data/kitti_mini, data/synthetic
+- **Các frame đã dùng:** 000011, 000021, 000049
 
 > Hãy viết ngắn: mỗi mục từ 3 đến 8 dòng, ưu tiên số liệu và hình ảnh.
 
@@ -16,7 +16,7 @@
 
 Một câu khẳng định kỹ thuật có thể kiểm chứng. Ví dụ: *"Lệch yaw 1° làm 12% điểm LiDAR rơi ra khỏi vật thể ở 30 m, phát hiện được bằng edge-alignment score với ngưỡng X."*
 
-[ĐIỀN]
+Trong pipeline phát hiện vật cản dựa trên hình học (Voxel Grid -> RANSAC Plane -> DBSCAN Clustering) không dùng deep learning, việc tăng ngưỡng khoảng cách mặt phẳng RANSAC (`distance_threshold`) từ 0.20m lên 0.40m khiến hơn 45% số điểm của các vật cản thấp (< 0.8m) ở cự ly gần (< 15m) bị gán nhầm thành mặt đất và loại bỏ, làm giảm hơn 40% số lượng cụm vật cản phát hiện được; đồng thời tăng `voxel_size` từ 0.05m lên 0.20m giúp giảm latency từ >100ms xuống <25ms nhưng làm mất các vật thể nhỏ/xa có dưới 10 điểm.
 
 ## 2. Evidence
 
