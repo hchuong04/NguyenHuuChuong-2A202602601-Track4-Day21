@@ -62,11 +62,16 @@ Xu hướng của `voxel_size` (Từ 0.05 m → 0.30 m)
 
 ## 3. Failure case
 
-Nêu khi nào hệ thống hoặc phương pháp fail, vì sao fail, và liên hệ tới lớp nào trong 6 lớp debug: I/O, Geometry, Time, Preprocess, Model, Metric.
+![failure](../results/figures/fail_01_ground_oversegmentation.png)
 
-![failure](../results/figures/fail_[ĐIỀN].png)
-
-[ĐIỀN]
+- **Trường hợp:** KITTI 3D Object, frame `000011`, tăng ngưỡng RANSAC plane `distance_threshold` từ 0.15m lên 0.45m và DBSCAN `eps` từ 0.45m lên 0.80m.
+- **Quan sát:** Trên ảnh camera thực tế, số điểm vật cản giảm từ 5,525 xuống 4,799 điểm (mất 726 điểm trên ảnh, trong đó mất 339 điểm bánh và gầm xe ô tô ở cự ly gần 4.1m bên trái). Toàn bộ gầm và bánh xe bị RANSAC gọt phẳng và xoá sạch vào mặt đường. Đồng thời ở góc phải, 2 người đi bộ đứng gần nhau (cách nhau ~0.8m) bị DBSCAN gộp thành 1 cụm duy nhất (từ 2 bounding box riêng biệt Ped #1, Ped #2 biến thành 1 box đỏ khổng lồ).
+- **Nguyên nhân:** Mô hình RANSAC giả định toàn bộ mặt đất là một mặt phẳng đơn toàn cục ($ax+by+cz+d=0$). Khi tăng ngưỡng lên 0.45m (vượt quá độ cao gầm xe ~0.20–0.30m), toàn bộ điểm vật thể cách mặt đường < 0.45m bị gán nhầm thành inlier mặt đất. Với DBSCAN, khoảng cách giữa 2 người (~0.8m) nhỏ hơn hoặc bằng bán kính `eps = 0.80m` nên thuật toán nối thông các điểm thành một cụm duy nhất (Under-segmentation).
+- **Lớp debug:** Preprocess & Geometry.
+- **Cách phát hiện khi chạy thật:**
+  1. Giám sát vector pháp tuyến cục bộ: Điểm có vector pháp tuyến nằm ngang ($n_z < 0.7$) không được phép gán thành mặt đất dù khoảng cách tới mặt phẳng $\le threshold$.
+  2. Giám sát kích thước Bounding Box: Cảnh báo khi chiều cao ước lượng của ô tô đột ngột tụt xuống $h < 1.0\text{m}$ (báo động Over-segmentation).
+  3. Cảnh báo gộp cụm: Theo dõi tỷ lệ diện tích/chiều rộng cụm người đi bộ nếu vượt quá $1.2\text{m}$ ở cự ly gần để kích hoạt thuật toán tách cụm (Sub-clustering).
 
 ## 4. Khuyến nghị nếu triển khai thật
 
@@ -92,6 +97,9 @@ python src/obstacle_detector.py --data-root data/synthetic --frame 000000 --voxe
 
 # 4. Chạy benchmark sweep tham số (Topic D - CP3)
 python src/benchmark_obstacle.py --data-root data/kitti_mini --frame 000011
+
+# 5. Chạy phân tích failure case (Topic D - CP4)
+python src/visualize_failure.py
 ```
 
 ## 6. Khai báo sử dụng AI
