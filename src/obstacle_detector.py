@@ -69,6 +69,9 @@ def segment_ground_plane(pcd: o3d.geometry.PointCloud,
       obstacle_pts: tọa độ các điểm vật cản (outliers)
       obstacle_pcd: Open3D PointCloud của vật cản
     """
+    if hasattr(o3d.utility, "random"):
+        o3d.utility.random.seed(42)
+
     plane_model, inliers = pcd.segment_plane(
         distance_threshold=distance_threshold,
         ransac_n=ransac_n,

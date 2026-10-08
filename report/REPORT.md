@@ -20,13 +20,45 @@ Trong pipeline phát hiện vật cản dựa trên hình học (Voxel Grid -> R
 
 ## 2. Evidence
 
-Bảng hoặc plot số liệu, kèm ảnh/video demo. Ghi rõ đường dẫn file trong `results/`.
+Bảng số liệu sweep tham số RANSAC distance threshold (cố định `voxel_size=0.10m`, `eps=0.5m`) và Voxel size (cố định `dist_th=0.20m`, `eps=0.5m`) trên frame 000011 (KITTI). Dữ liệu chi tiết lưu tại `results/obstacle_ransac_sweep.csv` và `results/obstacle_voxel_sweep.csv`.
 
-| Cấu hình / mức perturb | Metric 1 | Metric 2 | Ghi chú |
-|---|---|---|---|
-| [ĐIỀN] | | | |
+| Cấu hình tham số | Số điểm sau Voxel | Tỷ lệ mặt đất (%) | Số Clusters | Điểm vật thấp gần (<0.8m) | Latency p50 / p95 (ms) |
+|---|---|---|---|---|---|
+| RANSAC th = 0.10m | 21,930 | 37.56% | 82 | 3,063 pts | 29.8 ms / 33.2 ms |
+| RANSAC th = 0.20m (chuẩn) | 21,930 | 46.00% | 61 | 2,278 pts | 26.3 ms / 29.5 ms |
+| RANSAC th = 0.30m | 21,930 | 50.62% | 57 | 1,666 pts | 23.1 ms / 25.8 ms |
+| RANSAC th = 0.40m | 21,930 | 53.02% | 56 | 1,372 pts | 21.2 ms / 23.4 ms |
+| RANSAC th = 0.50m | 21,930 | 57.77% | 54 | 1,180 pts (-61.5%) | 19.8 ms / 21.9 ms |
+| Voxel size = 0.05m | 37,495 | 45.12% | 61 | 3,120 pts | 71.6 ms / 80.3 ms |
+| Voxel size = 0.10m (chuẩn) | 21,930 | 46.00% | 61 | 2,278 pts | 26.6 ms / 30.0 ms |
+| Voxel size = 0.20m | 10,473 | 47.95% | 49 | 1,180 pts | 8.6 ms / 9.3 ms |
+| Voxel size = 0.30m | 6,441 | 51.20% | 51 | 840 pts | 4.5 ms / 5.5 ms |
 
-![demo](../results/figures/[ĐIỀN].png)
+![benchmark](../results/figures/obstacle_benchmark_analysis.png)
+![demo](../results/figures/obstacle_demo_frame_000011_vox0.1_dist0.2_eps0.5.png)
+
+Nhận xét:
+A. Xu hướng của `RANSAC distance_threshold` (Từ 0.10 m → 0.50 m)
+Xu hướng chung
+- Ngưỡng càng nới rộng → mặt đất **"nuốt" càng nhiều điểm**.
+- Tỷ lệ Ground tăng đều từ **37.56% → 57.77%**.
+- Trong khi đó, số điểm vật cản sát đất giảm từ **3,063 → 1,180 điểm**, tương đương mất **61.5%**.
+Điểm đột ngột xấu đi
+- Tại bước nhảy từ **0.20 m → 0.30 m**, số điểm vật cản thấp giảm mạnh từ **2,278 → 1,666 điểm**.
+- Tương đương mất gần **30% chỉ sau một mức tăng ngưỡng**.
+- Các vật thể thấp như **bánh xe, người ngồi, pallet** bắt đầu bị RANSAC coi là **mặt đường** và **xoá bỏ hoàn toàn**.
+
+---
+
+Xu hướng của `voxel_size` (Từ 0.05 m → 0.30 m)
+- Kích thước voxel càng lớn → số điểm giảm theo hàm mũ (**37,495 → 6,441 điểm**).
+- Đồng thời, độ trễ xử lý (**Latency p50**) giảm phi mã từ **71.6 ms → 4.5 ms**.
+Điểm cân bằng tối ưu (Sweet spot)
+- Tại `voxel_size = 0.10 m`:
+  - Độ trễ là **26.6 ms**, vượt qua ngưỡng Real-time **33.3 ms / 30 Hz**.
+  - Vẫn giữ được trọn vẹn **61 cụm vật cản**, bao gồm **28 cụm ở cự ly xa >25 m**.
+- Khi tăng lên `voxel_size = 0.20 m`, số lượng cụm ở xa tụt mạnh xuống còn **22 cụm**.
+- Nguyên nhân là mật độ điểm bị thưa, xuống dưới ngưỡng `min_points=10` của **DBSCAN**.
 
 ## 3. Failure case
 
@@ -57,6 +89,9 @@ python -m starter.projection --data-root data/kitti_mini --frame 000011
 # 3. Chạy pipeline phát hiện vật cản (Topic D - CP2)
 python src/obstacle_detector.py --data-root data/kitti_mini --frame 000011 --voxel-size 0.1 --distance-threshold 0.2 --eps 0.5
 python src/obstacle_detector.py --data-root data/synthetic --frame 000000 --voxel-size 0.1 --distance-threshold 0.2 --eps 0.5
+
+# 4. Chạy benchmark sweep tham số (Topic D - CP3)
+python src/benchmark_obstacle.py --data-root data/kitti_mini --frame 000011
 ```
 
 ## 6. Khai báo sử dụng AI
